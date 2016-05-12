@@ -84,11 +84,17 @@ function publish(taffyData, options, tutorials) {
   actions.push(generate(helper.getUniqueFilename('index'), require('./view-models/home')));
   actions.push(generate('conf.py', require('./view-models/sphinx-config')));
   var docletModel = require('./view-models/doclet');
+  
   context.data().each(function(doclet) {
     var url = helper.longnameToUrl[doclet.longname];
+        
     if (url.indexOf('#') > -1) {
         url = helper.longnameToUrl[doclet.longname].split(/#/).pop();
     }
+    
+    if (doclet.undocumented)
+      return;
+    
     if (util.mainDocletKinds.indexOf(doclet.kind) !== -1) {
       actions.push(generate(url, docletModel(doclet)));
     }
